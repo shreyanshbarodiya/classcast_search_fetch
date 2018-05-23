@@ -4,7 +4,6 @@ from .models import question
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = question
-        fields = ('__all__',) 
         url = serializers.SerializerMethodField(read_only=True)
 
     # converts to JSON

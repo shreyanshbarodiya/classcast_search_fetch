@@ -5,7 +5,7 @@ from django.db import models
 
 # Create your models here.
 class question(models.Model):
-	xblock_id= models.CharField(max_length=1000)
+	xblock_id= models.CharField(max_length=1000, primary_key=True)
 	question_type=models.CharField(max_length=50)
 	standard=models.IntegerField()
 	stream=models.CharField(max_length=100)
