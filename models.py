@@ -28,8 +28,8 @@ class question(models.Model):
 	num_deliveries=models.IntegerField()
 	num_skipped=models.IntegerField()
 
-    class Meta:
-        db_table = 'classcast_questions'
+	class Meta:
+		db_table = 'classcast_questions'
 
-    def __str__(self):
-        return u'%s %s %s' % (str(self.subject), str(self.topic), str(self.xblock_id))
+	def __str__(self):
+		return u'%s %s %s' % (str(self.subject), str(self.topic), str(self.xblock_id))
