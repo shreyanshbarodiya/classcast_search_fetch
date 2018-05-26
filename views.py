@@ -4,11 +4,10 @@ from rest_framework import viewsets
 
 # Create your views here.
 from rest_framework import generics
-#from django.contrib.auth import Users
-#todo: import users
 from .serializers import QuestionSerializer
-from .models import question,student_topic_interaction,topicsf
-from appname.models import test_submissions
+from .models import question,student_topic_interaction,topics
+#todo:from appname.models import test_submissions
+#import submisson here 
 from django.db.models import Q
 import random
 
