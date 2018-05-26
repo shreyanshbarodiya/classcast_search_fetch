@@ -33,3 +33,32 @@ class question(models.Model):
 
 	def __str__(self):
 		return u'%s %s %s' % (str(self.subject), str(self.topic), str(self.xblock_id))
+
+class chapter(models.Model):
+	standard =models.IntegerField()
+	subject=models.CharField(max_length=50)
+	chapter=models.CharField(max_length=255)
+
+
+	def __str__(self):
+		return self.chapter_name
+
+class topics(models.Model):
+	chapter_name=models.ForeignKey(chapter, on_delete=models.CASCADE)
+	topic=models.CharField(max_length=255)
+
+	def __str__(self):
+		return chapter_name+ ":" + topic_name
+
+class student_topic_interaction(models.Model):
+	student_id= models.ForeignKey()
+	topic=models.ForeignKey(topics)
+	difficulty=models.IntegerField()
+	num_attempts=models.IntegerField()
+	num_skipped=models.IntegerField()
+	num_corrects=models.IntegerField()
+
+
+	def __str__(self):
+		return student_id+":"+topic
+
