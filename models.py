@@ -12,7 +12,7 @@ class question(models.Model):
 	subject=models.CharField(max_length=50)
 	marks=models.IntegerField()
 	goal=models.CharField(max_length=100)
-	difficulty=models.CharField(max_length=100)
+	difficulty=models.IntegerField()
 	chapter=models.CharField(max_length=100)
 	topic=models.CharField(max_length=100)
 	subtopic=models.CharField(max_length=100)
