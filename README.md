@@ -1,7 +1,8 @@
 # classcast_search_fetch
 
-#End Points 
+#End Points  
 /api/classcast/search
+
 parameters:  
 standard- which class 11,12 etc  
 diffuculty : 0,1,2  
