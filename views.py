@@ -187,6 +187,7 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
 
     def get_queryset(self):
         qs = question.objects.all()
+        topic_list = topics.objects.all()
 
         n_questions=3 # fetch questions in the batches of 3
         correct_threshold=3
@@ -201,13 +202,16 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         
         if standard is not None:
             qs = qs.filter(standard__iexact=standard)
+            topic_list = topic_list.filter(standard__iexact=standard)
         if subject is not None:
             qs = qs.filter(subject__iexact=subject)
+            topic_list = topic_list.filter(subject__iexact=subject)
         if chapter is not None:
             qs = qs.filter(chapter__iexact=chapter)
+            topic_list = topic_list.filter(chapter__iexact=chapter)
         
         #fetch topic list of given chapter
-        topic_list=topics.objects.all().filter(standard__iexact=standard, subject__iexact=subject, chapter__iexact=chapter)
+        # topic_list=topics.objects.all().filter(standard__iexact=standard, subject__iexact=subject, chapter__iexact=chapter)
         fetch_topic=''
         fetch_difficulty=''
         #iterate over topics and look for current topic and difficulty of user
