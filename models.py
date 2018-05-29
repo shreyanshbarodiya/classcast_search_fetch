@@ -61,7 +61,7 @@ class topics(models.Model):
 class student_topic_interaction(models.Model):
 	student_id= models.IntegerField(primary_key=True)
 	topic_id=models.IntegerField(primary_key=True)
-	difficulty=models.IntegerField()
+	difficulty=models.IntegerField(primary_key=True)
 	num_attempts=models.IntegerField()
 	num_skipped=models.IntegerField()
 	num_corrects=models.IntegerField()

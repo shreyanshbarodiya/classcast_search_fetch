@@ -216,9 +216,9 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         fetch_difficulty=''
         #iterate over topics and look for current topic and difficulty of user
         for topic in topic_list.iterator():
-            submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).values('num_corrects',flat=True)
-            submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).values('num_corrects',flat=True)
-            submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2, topic_id=topic.topic_id).values('num_corrects',flat=True)
+            submissions_easy=student_topic_interaction.objects.get(student_id=student_id,difficulty=0, topic_id=topic.topic_id).num_corrects
+            submissions_medium=student_topic_interaction.objects.get(student_id=student_id,difficulty=1, topic_id=topic.topic_id).num_corrects
+            submissions_difficult=student_topic_interaction.objects.get(student_id=student_id,difficulty=2, topic_id=topic.topic_id).num_corrects
             #if number of diffiuclt correct question greater than threshold go to next topic
             if submissions_difficult is not None and submissions_difficult>=correct_threshold:
                 continue;
