@@ -85,7 +85,8 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
             n_questions=12
         elif duration==60:
             n_questions=24
-        else n_questions=10
+        else:
+            n_questions=10
 
 
         # filter by the user for not correctly submitted user 
