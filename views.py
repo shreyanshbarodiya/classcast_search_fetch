@@ -61,70 +61,70 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
             qs = qs.filter(tags__contains=tags)
         return qs
 
-# class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormView
-#     #queryset = question.objects.all()
-#     serializer_class        = QuestionSerializer
+class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormView
+    #queryset = question.objects.all()
+    serializer_class        = QuestionSerializer
 
-#     def get_queryset(self):
-#         qs = question.objects.all()
+    def get_queryset(self):
+        qs = question.objects.all()
 
-#         #n_questions=self.request.GET.get("n_questions")
-#         question_type = self.request.GET.get("question_type")
-#         # difficulty = self.request.GET.get("difficulty")
-#         subject = self.request.GET.get("subject")
-#         chapter=self.request.GET.get("chapter")
-#         standard=self.request.GET.get("standard")
-#         goal=self.request.GET.get("goal")
-#         stream=self.request.GET.get("stream")
-#         topic=self.request.GET.get("topic")
-#         subtopic=self.request.GET.get("subtopic")
-#         marks=self.request.GET.get("marks")
+        #n_questions=self.request.GET.get("n_questions")
+        question_type = self.request.GET.get("question_type")
+        # difficulty = self.request.GET.get("difficulty")
+        subject = self.request.GET.get("subject")
+        chapter=self.request.GET.get("chapter")
+        standard=self.request.GET.get("standard")
+        goal=self.request.GET.get("goal")
+        stream=self.request.GET.get("stream")
+        topic=self.request.GET.get("topic")
+        subtopic=self.request.GET.get("subtopic")
+        marks=self.request.GET.get("marks")
 
-#         duration=int(self.request.GET.get("duration"))
-#         if duration==30 :
-#             n_questions=12
-#         elif duration==60:
-#             n_questions=24
-#         else n_questions=10
-
-
-#         # filter by the user for not correctly submitted user 
-#         # user_id = self.request.user.id
-#         # submissions=test_submissions.objects.all().filter(student_id=user_id)
-#         # submissions=submissions.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
+        duration=int(self.request.GET.get("duration"))
+        if duration==30 :
+            n_questions=12
+        elif duration==60:
+            n_questions=24
+        else n_questions=10
 
 
+        # filter by the user for not correctly submitted user 
+        # user_id = self.request.user.id
+        # submissions=test_submissions.objects.all().filter(student_id=user_id)
+        # submissions=submissions.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
 
-#         if question_type is not None:
-#             qs = qs.filter(question_type__iexact=question_type)
-#         # if difficulty is not None:
-#         #     qs = qs.filter(difficulty__iexact=difficulty)
-#         if subject is not None:
-#             qs = qs.filter(subject__iexact=subject)
-#         if chapter is not None:
-#             qs = qs.filter(chapter__iexact=chapter)
-#         if standard is not None:
-#             qs = qs.filter(standard__iexact=standard)
-#         if goal is not None:
-#             qs = qs.filter(goal__iexact=goal)
-#         if stream is not None:
-#             qs = qs.filter(stream__iexact=stream)
-#         if topic is not None:
-#             qs = qs.filter(topic__iexact=topic)
-#         if topic is not None:
-#             qs = qs.filter(topic__iexact=topic)
-#         if subtopic is not None:
-#             qs = qs.filter(subtopic__iexact=subtopic)
-#         if marks is not None:
-#             qs = qs.filter(marks__iexact=marks)
 
-#         #qs.exclude(xblock_id__in=submissions)
-#         #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
-#         qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
-#         qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
-#         qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
-#         qs0.union(qs1, qs2)
-#         return qs0
+
+        if question_type is not None:
+            qs = qs.filter(question_type__iexact=question_type)
+        # if difficulty is not None:
+        #     qs = qs.filter(difficulty__iexact=difficulty)
+        if subject is not None:
+            qs = qs.filter(subject__iexact=subject)
+        if chapter is not None:
+            qs = qs.filter(chapter__iexact=chapter)
+        if standard is not None:
+            qs = qs.filter(standard__iexact=standard)
+        if goal is not None:
+            qs = qs.filter(goal__iexact=goal)
+        if stream is not None:
+            qs = qs.filter(stream__iexact=stream)
+        if topic is not None:
+            qs = qs.filter(topic__iexact=topic)
+        if topic is not None:
+            qs = qs.filter(topic__iexact=topic)
+        if subtopic is not None:
+            qs = qs.filter(subtopic__iexact=subtopic)
+        if marks is not None:
+            qs = qs.filter(marks__iexact=marks)
+
+        #qs.exclude(xblock_id__in=submissions)
+        #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
+        qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
+        qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
+        qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
+        qs0.union(qs1, qs2)
+        return qs0
 
 
 # class QuestionChallengeAPIView(generics.ListAPIView): # DetailView CreateView FormView
