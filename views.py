@@ -124,8 +124,8 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
         qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
         qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
         qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
-        qs0.union(qs1, qs2)
-        return qs0
+        # qs0.union(qs1, qs2)
+        return qs0 | qs1 | qs2
 
 
 # class QuestionChallengeAPIView(generics.ListAPIView): # DetailView CreateView FormView
