@@ -35,9 +35,9 @@ class question(models.Model):
 		return u'%s %s %s' % (str(self.subject), str(self.topic), str(self.xblock_id))
 
 class chapter(models.Model):
-	standard =models.IntegerField()
-	subject=models.CharField(max_length=50)
-	chapter=models.CharField(max_length=255)
+	standard =models.IntegerField(primary_key=True)
+	subject=models.CharField(max_length=50, primary_key=True)
+	chapter=models.CharField(max_length=255, primary_key=True)
 
 	class Meta:
 		db_table = 'classcast_chapter_index'
@@ -50,7 +50,7 @@ class topics(models.Model):
 	subject=models.CharField(max_length=50)
 	chapter=models.CharField(max_length=255)	
 	topic_name=models.CharField(max_length=255)
-	topic_id=models.IntegerField()
+	topic_id=models.IntegerField(primary_key=True)
 
 	class Meta:
 		db_table = 'classcast_topic_index'
@@ -59,8 +59,8 @@ class topics(models.Model):
 		return self.standard + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
 
 class student_topic_interaction(models.Model):
-	student_id= models.IntegerField()
-	topic_id=models.IntegerField()
+	student_id= models.IntegerField(primary_key=True)
+	topic_id=models.IntegerField(primary_key=True)
 	difficulty=models.IntegerField()
 	num_attempts=models.IntegerField()
 	num_skipped=models.IntegerField()
