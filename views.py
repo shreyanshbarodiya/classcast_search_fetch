@@ -97,22 +97,20 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
 
 
 
-        if question_type is not None:
-            qs = qs.filter(question_type__iexact=question_type)
-        # if difficulty is not None:
-        #     qs = qs.filter(difficulty__iexact=difficulty)
-        if subject is not None:
-            qs = qs.filter(subject__iexact=subject)
-        if chapter is not None:
-            qs = qs.filter(chapter__iexact=chapter)
-        if standard is not None:
-            qs = qs.filter(standard__iexact=standard)
         if goal is not None:
             qs = qs.filter(goal__iexact=goal)
         if stream is not None:
             qs = qs.filter(stream__iexact=stream)
-        if topic is not None:
-            qs = qs.filter(topic__iexact=topic)
+        if standard is not None:
+            qs = qs.filter(standard__iexact=standard)
+        if subject is not None:
+            qs = qs.filter(subject__iexact=subject)
+        if chapter is not None:
+            qs = qs.filter(chapter__iexact=chapter)
+        if question_type is not None:
+            qs = qs.filter(question_type__iexact=question_type)
+        # if difficulty is not None:
+        #     qs = qs.filter(difficulty__iexact=difficulty)
         if topic is not None:
             qs = qs.filter(topic__iexact=topic)
         if subtopic is not None:
@@ -183,64 +181,64 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
 #         return qs
 
 
-# class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
-#     #queryset = question.objects.all()
-#     serializer_class        = QuestionSerializer
+class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
+    #queryset = question.objects.all()
+    serializer_class        = QuestionSerializer
 
-#     def get_queryset(self):
-#         qs = question.objects.all()
+    def get_queryset(self):
+        qs = question.objects.all()
 
-#         n_questions=3 # fetch questions in the batches of 3
-#         correct_threshold=3
-#         subject = self.request.GET.get("subject")
-#         chapter=self.request.GET.get("chapter")
-#         standard=self.request.GET.get("standard")
+        n_questions=3 # fetch questions in the batches of 3
+        correct_threshold=3
+        subject = self.request.GET.get("subject")
+        chapter=self.request.GET.get("chapter")
+        standard=self.request.GET.get("standard")
 
 
-#         # filter by the user for not correctly submitted user 
-#         student_id = self.request.user.id
+        # filter by the user for not correctly submitted user 
+        student_id = self.request.user.id
 
         
-#         if subject is not None:
-#             qs = qs.filter(subject__iexact=subject)
-#         if chapter is not None:
-#             qs = qs.filter(chapter__iexact=chapter)
-#         if standard is not None:
-#             qs = qs.filter(standard__iexact=standard)
+        if standard is not None:
+            qs = qs.filter(standard__iexact=standard)
+        if subject is not None:
+            qs = qs.filter(subject__iexact=subject)
+        if chapter is not None:
+            qs = qs.filter(chapter__iexact=chapter)
         
-#         #fetch topic list of given chapter
-#         topic_list=topics.objects.all().filter(chapter__iexact=chapter)
-#         fetch_topic=''
-#         fetch_difficulty=''
-#         #iterate over topics and look for current topic and difficulty of user
-#         for topic in topic_list.iterator():
-#             submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0).values('num_corrects',flat=True)
-#             submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1).values('num_corrects',flat=True)
-#             submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2).values('num_corrects',flat=True)
-#             #if number of diffiuclt correct question greater than threshold go to next topic
-#             if submissions_difficult is not None and submissions_difficult>=correct_threshold:
-#                 continue;
-#             #if number of mediumm correct question greater than threshold choose current topic and diffuclt level
-#             elif submissions_medium is not None and submissions_medium >=correct_threshold:
-#                 fetch_difficulty=2
-#                 fetch_topic=topic
-#                 break
-#             elif submissions_easy is not None and submissions_easy >=correct_threshold:
-#                 fetch_difficulty=1
-#                 fetch_topic=topic
-#                 break
-#             else :
-#                 fetch_difficulty=0
-#                 fetch_topic=topic
-#                 break
+        #fetch topic list of given chapter
+        topic_list=topics.objects.all().filter(standard__iexact=standard, subject__iexact=subject, chapter__iexact=chapter)
+        fetch_topic=''
+        fetch_difficulty=''
+        #iterate over topics and look for current topic and difficulty of user
+        for topic in topic_list.iterator():
+            submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).values('num_corrects',flat=True)
+            submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).values('num_corrects',flat=True)
+            submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2, topic_id=topic.topic_id).values('num_corrects',flat=True)
+            #if number of diffiuclt correct question greater than threshold go to next topic
+            if submissions_difficult is not None and submissions_difficult>=correct_threshold:
+                continue;
+            #if number of mediumm correct question greater than threshold choose current topic and diffuclt level
+            elif submissions_medium is not None and submissions_medium >=correct_threshold:
+                fetch_difficulty=2
+                fetch_topic=topic
+                break
+            elif submissions_easy is not None and submissions_easy >=correct_threshold:
+                fetch_difficulty=1
+                fetch_topic=topic
+                break
+            else :
+                fetch_difficulty=0
+                fetch_topic=topic
+                break
 
-#         # fetch 3 questions of fetch_difficulty and fetch topic
-#         #if done on all topics do something here , currently 
-#         #using a random topic and random diffiuclty 
-#         if fetch_topic=='':
-#             fetch_topic=random.choice(topic_list)
-#             fetch_difficulty=random.choice([0,1,2])        
+        # fetch 3 questions of fetch_difficulty and fetch topic
+        #if done on all topics do something here , currently 
+        #using a random topic and random diffiuclty 
+        if fetch_topic=='':
+            fetch_topic=random.choice(topic_list)
+            fetch_difficulty=random.choice([0,1,2])        
 
-#         qs = qs.filter(topic__iexact=fetch_topic)
-#         qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
-#         return qs
+        qs = qs.filter(topic__iexact=fetch_topic.topic_name)
+        qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
+        return qs
