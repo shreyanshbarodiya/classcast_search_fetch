@@ -39,26 +39,36 @@ class chapter(models.Model):
 	subject=models.CharField(max_length=50)
 	chapter=models.CharField(max_length=255)
 
+	class Meta:
+		db_table = 'classcast_chapter_index'
 
 	def __str__(self):
-		return self.chapter_name
+		return self.standard + ":" + self.subject + ":" + self.chapter 
 
 class topics(models.Model):
-	chapter_name=models.ForeignKey(chapter, on_delete=models.CASCADE)
-	topic=models.CharField(max_length=255)
+	standard =models.IntegerField()
+	subject=models.CharField(max_length=50)
+	chapter=models.CharField(max_length=255)	
+	topic_name=models.CharField(max_length=255)
+	topic_id=models.IntegerField()
+
+	class Meta:
+		db_table = 'classcast_topic_index'
 
 	def __str__(self):
-		return chapter_name+ ":" + topic_name
+		return self.standard + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
 
 class student_topic_interaction(models.Model):
-	student_id= models.ForeignKey()
-	topic=models.ForeignKey(topics)
+	student_id= models.IntegerField()
+	topic_id=models.IntegerField()
 	difficulty=models.IntegerField()
 	num_attempts=models.IntegerField()
 	num_skipped=models.IntegerField()
 	num_corrects=models.IntegerField()
 
+	class Meta:
+		db_table = 'classcast_student_topic_interaction'
 
 	def __str__(self):
-		return student_id+":"+topic
+		return self.student_id + ":" + self.topic_id
 

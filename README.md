@@ -1,7 +1,7 @@
 # classcast_search_fetch
 
 #End Points  
-/api/classcast/search
+/classcast/fetch/search
 
 parameters:  
 standard- which class 11,12 etc  
@@ -12,8 +12,8 @@ tags
 goal  
 marks  
   
-/api/classcast/test  
+/classcast/fetch/test  
 
-/api/classcast/challenge  
+/classcast/fetch/challenge  
 
-/api/classcast/gym  
+/classcast/fetch/gym  
