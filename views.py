@@ -216,18 +216,18 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         fetch_difficulty=''
         #iterate over topics and look for current topic and difficulty of user
         for topic in topic_list.iterator():
-            submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).first().values('num_corrects')
-            submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).first().values('num_corrects')
-            submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2, topic_id=topic.topic_id).first().values('num_corrects')
+            submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).first()
+            submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).first()
+            submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2, topic_id=topic.topic_id).first()
             #if number of diffiuclt correct question greater than threshold go to next topic
-            if submissions_difficult is not None and submissions_difficult>=correct_threshold:
+            if submissions_difficult is not None and submissions_difficult.values('num_corrects')>=correct_threshold:
                 continue;
             #if number of mediumm correct question greater than threshold choose current topic and diffuclt level
-            elif submissions_medium is not None and submissions_medium >=correct_threshold:
+            elif submissions_medium is not None and submissions_medium.values('num_corrects') >=correct_threshold:
                 fetch_difficulty=2
                 fetch_topic=topic
                 break
-            elif submissions_easy is not None and submissions_easy >=correct_threshold:
+            elif submissions_easy is not None and submissions_easy.values('num_corrects') >=correct_threshold:
                 fetch_difficulty=1
                 fetch_topic=topic
                 break
