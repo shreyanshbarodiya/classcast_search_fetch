@@ -10,6 +10,7 @@ from .models import question,student_topic_interaction,topics
 #import submisson here 
 from django.db.models import Q
 import random
+from itertools import chain
 
 class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -125,8 +126,9 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
         qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
         qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
         # qs0.union(qs1, qs2)
-        return qs0 | qs1 | qs2
-
+        # return qs0 | qs1 | qs2
+        qs_final = list(chain(qs0, qs1, qs2))
+        return qs_final
 
 # class QuestionChallengeAPIView(generics.ListAPIView): # DetailView CreateView FormView
 #     #queryset = question.objects.all()
