@@ -62,9 +62,9 @@ class student_topic_interaction(models.Model):
 	student_id= models.IntegerField(primary_key=True)
 	topic_id=models.IntegerField(primary_key=True)
 	difficulty=models.IntegerField(primary_key=True)
-	num_attempts=models.IntegerField()
-	num_skipped=models.IntegerField()
-	num_corrects=models.IntegerField()
+	num_attempts=models.IntegerField(default=0)
+	num_skipped=models.IntegerField(default=0)
+	num_corrects=models.IntegerField(default=0)
 
 	class Meta:
 		db_table = 'classcast_student_topic_interaction'
