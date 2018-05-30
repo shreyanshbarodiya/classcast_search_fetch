@@ -73,7 +73,8 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
         question_type = self.request.GET.get("question_type")
         # difficulty = self.request.GET.get("difficulty")
         subject = self.request.GET.get("subject")
-        chapter=self.request.GET.get("chapter")
+        #chapter=self.request.GET.get("chapter")
+        chapter=request.GET.getlist('chapter')
         standard=self.request.GET.get("standard")
         goal=self.request.GET.get("goal")
         stream=self.request.GET.get("stream")
@@ -106,7 +107,7 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
         if subject is not None:
             qs = qs.filter(subject__iexact=subject)
         if chapter is not None:
-            qs = qs.filter(chapter__iexact=chapter)
+            qs = qs.filter(chapter__in=chapter)
         if question_type is not None:
             qs = qs.filter(question_type__iexact=question_type)
         # if difficulty is not None:
@@ -128,57 +129,58 @@ class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormVie
         qs_final = list(chain(qs0, qs1, qs2))
         return qs_final
 
-# class QuestionChallengeAPIView(generics.ListAPIView): # DetailView CreateView FormView
-#     #queryset = question.objects.all()
-#     serializer_class        = QuestionSerializer
+class QuestionChallengeAPIView(generics.ListAPIView): # DetailView CreateView FormView
+    #queryset = question.objects.all()
+    serializer_class        = QuestionSerializer
 
-#     def get_queryset(self):
-#         qs = question.objects.all()
-#         question_type = self.request.GET.get("question_type")
-#         difficulty = self.request.GET.get("difficulty")
-#         subject = self.request.GET.get("subject")
-#         chapter=self.request.GET.get("chapter")
-#         standard=self.request.GET.get("standard")
-#         goal=self.request.GET.get("goal")
-#         stream=self.request.GET.get("stream")
-#         topic=self.request.GET.get("topic")
-#         subtopic=self.request.GET.get("subtopic")
-#         marks=self.request.GET.get("marks")
+    def get_queryset(self):
+        qs = question.objects.all()
+        question_type = self.request.GET.get("question_type")
+        difficulty = self.request.GET.get("difficulty")
+        subject = self.request.GET.get("subject")
+        #chapter=self.request.GET.get("chapter")
+        chapter=request.GET.getlist('chapter')
+        standard=self.request.GET.get("standard")
+        goal=self.request.GET.get("goal")
+        stream=self.request.GET.get("stream")
+        topic=self.request.GET.get("topic")
+        subtopic=self.request.GET.get("subtopic")
+        marks=self.request.GET.get("marks")
+        n_questions=self.request.GET.get("n_questions")
+        #filter by both users for not done questions
+        #WHY user2_id=marks???
+        # user1_id = self.request.user.id
+        # user2_id=marks=self.request.GET.get("opponent")
+        # submissions1=test_submissions.objects.all().filter(student_id=user1_id)
+        # submissions1=submissions1.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
+        # submissions2=test_submissions.objects.all().filter(student_id=user2_id)
+        # submissions2=submissions2.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
 
-#         #filter by both users for not done questions
-#         #WHY user2_id=marks???
-#         user1_id = self.request.user.id
-#         user2_id=marks=self.request.GET.get("opponent")
-#         submissions1=test_submissions.objects.all().filter(student_id=user1_id)
-#         submissions1=submissions1.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
-#         submissions2=test_submissions.objects.all().filter(student_id=user2_id)
-#         submissions2=submissions2.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
 
 
+        if question_type is not None:
+            qs = qs.filter(question_type__iexact=question_type)
+        if difficulty is not None:
+            qs = qs.filter(difficulty__iexact=difficulty)
+        if subject is not None:
+            qs = qs.filter(subject__iexact=subject)
+        if chapter is not None:
+            qs = qs.filter(chapter__iexact=chapter)
+        if standard is not None:
+            qs = qs.filter(standard__iexact=standard)
+        if goal is not None:
+            qs = qs.filter(goal__iexact=goal)
+        if stream is not None:
+            qs = qs.filter(stream__iexact=stream)
+        if topic is not None:
+            qs = qs.filter(topic__iexact=topic)
+        if subtopic is not None:
+            qs = qs.filter(subtopic__iexact=subtopic)
+        if marks is not None:
+            qs = qs.filter(marks__iexact=marks)
 
-#         if question_type is not None:
-#             qs = qs.filter(question_type__iexact=question_type)
-#         if difficulty is not None:
-#             qs = qs.filter(difficulty__iexact=difficulty)
-#         if subject is not None:
-#             qs = qs.filter(subject__iexact=subject)
-#         if chapter is not None:
-#             qs = qs.filter(chapter__iexact=chapter)
-#         if standard is not None:
-#             qs = qs.filter(standard__iexact=standard)
-#         if goal is not None:
-#             qs = qs.filter(goal__iexact=goal)
-#         if stream is not None:
-#             qs = qs.filter(stream__iexact=stream)
-#         if topic is not None:
-#             qs = qs.filter(topic__iexact=topic)
-#         if topic is not None:
-#             qs = qs.filter(topic__iexact=topic)
-#         if subtopic is not None:
-#             qs = qs.filter(subtopic__iexact=subtopic)
-#         if marks is not None:
-#             qs = qs.filter(marks__iexact=marks)
-#         return qs
+        qs.order_by('?')[:n_questions]
+        return qs
 
 
 class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
