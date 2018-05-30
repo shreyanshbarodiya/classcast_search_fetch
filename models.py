@@ -12,7 +12,7 @@ class question(models.Model):
 	subject=models.CharField(max_length=50)
 	marks=models.IntegerField()
 	goal=models.CharField(max_length=100)
-	difficulty=models.IntegerField()
+	difficulty=models.IntegerField(default=0)
 	chapter=models.CharField(max_length=100)
 	topic=models.CharField(max_length=100)
 	subtopic=models.CharField(max_length=100)
@@ -21,12 +21,12 @@ class question(models.Model):
 	option2_image=models.CharField(max_length=100,blank=True)
 	option3_image=models.CharField(max_length=100,blank=True)
 	option4_image=models.CharField(max_length=100,blank=True)
-	num_correct_submissions=models.IntegerField()
-	average_time_to_answer=models.FloatField()
+	num_correct_submissions=models.IntegerField(default=0)
+	average_time_to_answer=models.FloatField(default=0.0)
 	tags=models.CharField(max_length=100,null=True)
-	exam_appearances=models.IntegerField()
-	num_deliveries=models.IntegerField()
-	num_skipped=models.IntegerField()
+	exam_appearances=models.IntegerField(default=0)
+	num_deliveries=models.IntegerField(default=0)
+	num_skipped=models.IntegerField(default=0)
 
 	class Meta:
 		db_table = 'classcast_questions'
