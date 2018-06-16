@@ -69,6 +69,7 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
             qs = qs.filter(tags__contains=tags)
 
         from cms.djangoapps.contentstore.views.item import classcast_xblock_data
+        import cms.djangoapps.contentstore.utils
 
         for que in qs:
             que.data = classcast_xblock_data(que.xblock_id, self.request.user)
