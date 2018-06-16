@@ -20,7 +20,7 @@ from opaque_keys.edx.keys import UsageKey
 # from cms.djangoapps.contentstore.item import classcast_xblock_data
 from django.core import serializers
 from django.http import HttpResponse
-
+import json
 
 class QuestionSearchWithoutDataAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -173,7 +173,7 @@ def search_function(request):
         qs = qs.filter(tags__contains=tags)
 
     res_json = serializers.serialize('json', qs)
-
+    res_json = json.loads(res_json)
     for que in res_json:
         que['fields']['extra'] = "haha"
         # que['data'] = _xblock_data(que.xblock_id.strip())
