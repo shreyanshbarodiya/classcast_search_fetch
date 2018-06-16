@@ -126,6 +126,58 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
 
         return qs
 
+def search_function(request):
+    qs = question.objects.all()
+    n_questions=self.request.GET.get("n_questions")
+    question_type = self.request.GET.get("question_type")
+    subject = self.request.GET.get("subject")
+    difficulty = self.request.GET.get("difficulty")
+    chapter=self.request.GET.get("chapter")
+    standard=self.request.GET.get("standard")
+    goal=self.request.GET.get("goal")
+    stream=self.request.GET.get("stream")
+    topic=self.request.GET.get("topic")
+    subtopic=self.request.GET.get("subtopic")
+    marks=self.request.GET.get("marks")
+    exam_appearances=self.request.GET.get("exam_appearances")
+    tags=self.request.GET.get("tags")
+
+    if question_type is not None:
+        qs = qs.filter(question_type__iexact=question_type)
+    if difficulty is not None:
+        qs = qs.filter(difficulty__iexact=difficulty)
+    if subject is not None:
+        qs = qs.filter(difficulty__iexact=subject)
+    if chapter is not None:
+        qs = qs.filter(chapter__iexact=chapter)
+    if standard is not None:
+        qs = qs.filter(standard__iexact=standard)
+    if goal is not None:
+        qs = qs.filter(goal__iexact=goal)
+    if stream is not None:
+        qs = qs.filter(stream__iexact=stream)
+    if topic is not None:
+        qs = qs.filter(topic__iexact=topic)
+    if topic is not None:
+        qs = qs.filter(topic__iexact=topic)
+    if subtopic is not None:
+        qs = qs.filter(subtopic__iexact=subtopic)
+    if marks is not None:
+        qs = qs.filter(marks__iexact=marks)
+    if exam_appearances is not None:
+        qs = qs.filter(exam_appearances__gte=exam_appearances)
+    if tags is not None:
+        qs = qs.filter(tags__contains=tags)
+
+    res_json = serializers.serialize('json', qs)
+
+    for que in res_json:
+        que.extra = "haha"
+        que.data = _xblock_data(que.xblock_id.strip())
+
+    # return qs
+   
+    return HttpResponse(res_json, content_type='application/json')
 
 
 class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormView
