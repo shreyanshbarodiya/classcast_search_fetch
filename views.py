@@ -14,7 +14,7 @@ from itertools import chain
 
 from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.keys import UsageKey
-import cms.djangoapps.contentstore.views.item as cdcvi
+import cms.djangoapps.contentstore as cdc
 
 
 class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormView
@@ -263,7 +263,7 @@ def _get_question_data(xblock_id, user):
     usage_key = usage_key_with_run(xblock_id)
 
     with modulestore().bulk_operations(usage_key.course_key):
-        response = cdcvi._get_module_info(cdcvi._get_xblock(usage_key, user))
+        response = cdc.views.item._get_module_info(cdc.views.item._get_xblock(usage_key, user))
     return response['data']
 
 
