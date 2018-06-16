@@ -68,10 +68,10 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
         if tags is not None:
             qs = qs.filter(tags__contains=tags)
 
-        import cms
-        
+        from cms.djangoapps.contentstore.item import classcast_xblock_data
+
         for que in qs:
-            que.data = cms.djangoapps.contentstore.item.classcast_xblock_data(que.xblock_id, self.request.user)
+            que.data = classcast_xblock_data(que.xblock_id, self.request.user)
 
         return qs
 
