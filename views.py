@@ -176,7 +176,7 @@ def search_function(request):
     res_json = json.loads(res_json)
     for que in res_json:
         # que['fields']['extra'] = "haha"
-        que['data'] = _xblock_data(que.xblock_id.strip())
+        que['fields']['data'] = _xblock_data(que['pk'].strip())
 
     res_json = json.dumps(res_json)
 
