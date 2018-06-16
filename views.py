@@ -19,6 +19,57 @@ from opaque_keys.edx.keys import UsageKey
 # import cms.djangoapps.contentstore as cdc
 # from cms.djangoapps.contentstore.item import classcast_xblock_data
 
+class QuestionSearchWithoutDataAPIView(generics.ListAPIView): # DetailView CreateView FormView
+    #queryset = question.objects.all()
+    #lookup_field            = 
+    serializer_class        = QuestionSerializer
+    
+    def get_queryset(self):
+        qs = question.objects.all()
+        n_questions=self.request.GET.get("n_questions")
+        question_type = self.request.GET.get("question_type")
+        subject = self.request.GET.get("subject")
+        difficulty = self.request.GET.get("difficulty")
+        chapter=self.request.GET.get("chapter")
+        standard=self.request.GET.get("standard")
+        goal=self.request.GET.get("goal")
+        stream=self.request.GET.get("stream")
+        topic=self.request.GET.get("topic")
+        subtopic=self.request.GET.get("subtopic")
+        marks=self.request.GET.get("marks")
+        exam_appearances=self.request.GET.get("exam_appearances")
+        tags=self.request.GET.get("tags")
+
+
+        if question_type is not None:
+            qs = qs.filter(question_type__iexact=question_type)
+        if difficulty is not None:
+            qs = qs.filter(difficulty__iexact=difficulty)
+        if subject is not None:
+            qs = qs.filter(difficulty__iexact=subject)
+        if chapter is not None:
+            qs = qs.filter(chapter__iexact=chapter)
+        if standard is not None:
+            qs = qs.filter(standard__iexact=standard)
+        if goal is not None:
+            qs = qs.filter(goal__iexact=goal)
+        if stream is not None:
+            qs = qs.filter(stream__iexact=stream)
+        if topic is not None:
+            qs = qs.filter(topic__iexact=topic)
+        if topic is not None:
+            qs = qs.filter(topic__iexact=topic)
+        if subtopic is not None:
+            qs = qs.filter(subtopic__iexact=subtopic)
+        if marks is not None:
+            qs = qs.filter(marks__iexact=marks)
+        if exam_appearances is not None:
+            qs = qs.filter(exam_appearances__gte=exam_appearances)
+        if tags is not None:
+            qs = qs.filter(tags__contains=tags)
+
+        return qs
+
 
 class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -69,13 +120,12 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
         if tags is not None:
             qs = qs.filter(tags__contains=tags)
 
-        # from cms.djangoapps.contentstore.views.item import classcast_xblock_data
-        # import cms.djangoapps.contentstore.utils
-
         for que in qs:
-            que.data = _xblock_data(que.xblock_id, self.request.user)
+            que.data = _xblock_data(que.xblock_id.strip())
 
         return qs
+
+
 
 class QuestionTestAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -264,11 +314,11 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
         return qs
 
-def _xblock_data(xblock_id, user):
+def _xblock_data(xblock_id):
     usage_key = usage_key_with_run(xblock_id)
 
     with modulestore().bulk_operations(usage_key.course_key):
-        response = _get_xblock(usage_key, user)
+        response = _get_xblock(usage_key)
     
     if(response is None):
         return "Invalid Question ID"
@@ -278,7 +328,7 @@ def _xblock_data(xblock_id, user):
 
 
 
-def _get_xblock(usage_key, user):
+def _get_xblock(usage_key):
     """
     Returns the xblock for the specified usage key. Note: if failing to find a key with a category
     in the CREATE_IF_NOT_FOUND list, an xblock will be created and saved automatically.
