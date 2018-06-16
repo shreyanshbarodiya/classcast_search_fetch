@@ -17,7 +17,7 @@ from itertools import chain
 # import cms.djangoapps.contentstore.views as cdcv
 # import cms.djangoapps.contentstore as cdc
 # from cms.djangoapps.contentstore.item import classcast_xblock_data
-import cms
+
 
 class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -68,6 +68,8 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
         if tags is not None:
             qs = qs.filter(tags__contains=tags)
 
+        import cms
+        
         for que in qs:
             que.data = cms.djangoapps.contentstore.item.classcast_xblock_data(que.xblock_id, self.request.user)
 
