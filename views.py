@@ -121,6 +121,7 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
             qs = qs.filter(tags__contains=tags)
 
         for que in qs:
+            que.extra = "haha"
             que.data = _xblock_data(que.xblock_id.strip())
 
         return qs
