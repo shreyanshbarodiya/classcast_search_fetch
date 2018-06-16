@@ -13,7 +13,7 @@ import random
 from itertools import chain
 
 from xmodule.modulestore.django import modulestore
-from opaque_keys.edx.keys import UsageKey
+# from opaque_keys.edx.keys import UsageKey
 import cms.djangoapps.contentstore as cdc
 
 
@@ -260,20 +260,20 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
 
 
 def _get_question_data(xblock_id, user):
-    usage_key = usage_key_with_run(xblock_id)
+    usage_key = cdc.views.helpers.usage_key_with_run(xblock_id)
 
     with modulestore().bulk_operations(usage_key.course_key):
         response = cdc.views.item._get_module_info(cdc.views.item._get_xblock(usage_key, user))
     return response['data']
 
 
-def usage_key_with_run(usage_key_string):
-    """
-    Converts usage_key_string to a UsageKey, adding a course run if necessary
-    """
-    usage_key = UsageKey.from_string(usage_key_string)
-    usage_key = usage_key.replace(course_key=modulestore().fill_in_run(usage_key.course_key))
-    return usage_key
+# def usage_key_with_run(usage_key_string):
+#     """
+#     Converts usage_key_string to a UsageKey, adding a course run if necessary
+#     """
+#     usage_key = UsageKey.from_string(usage_key_string)
+#     usage_key = usage_key.replace(course_key=modulestore().fill_in_run(usage_key.course_key))
+#     return usage_key
 
 """
 replace_static_urls
