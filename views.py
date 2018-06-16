@@ -174,8 +174,8 @@ def search_function(request):
     res_json = serializers.serialize('json', qs)
 
     for que in res_json:
-        que.extra = "haha"
-        que.data = _xblock_data(que.xblock_id.strip())
+        que['extra'] = "haha"
+        que['data'] = _xblock_data(que.xblock_id.strip())
 
     # return qs
    
