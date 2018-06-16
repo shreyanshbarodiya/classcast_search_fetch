@@ -12,7 +12,8 @@ from django.db.models import Q
 import random
 from itertools import chain
 
-# from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.django import modulestore
+from xmodule.modulestore.exceptions import InvalidLocationError, ItemNotFoundError
 # from opaque_keys.edx.keys import UsageKey
 # import cms.djangoapps.contentstore.views as cdcv
 # import cms.djangoapps.contentstore as cdc
@@ -71,8 +72,8 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
         # from cms.djangoapps.contentstore.views.item import classcast_xblock_data
         # import cms.djangoapps.contentstore.utils
 
-        # for que in qs:
-        #     que.data = classcast_xblock_data(que.xblock_id, self.request.user)
+        for que in qs:
+            que.data = _xblock_data(que.xblock_id, self.request.user)
 
         return qs
 
@@ -263,10 +264,31 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
         return qs
 
+def _xblock_data(xblock_id, user):
+    usage_key = usage_key_with_run(xblock_id)
 
-# def _get_question_data(xblock_id, user):
-#     usage_key = cdcv.helpers.usage_key_with_run(xblock_id)
+    with modulestore().bulk_operations(usage_key.course_key):
+        response = _get_xblock(usage_key, user)
+    
+    if(response is None):
+        return "Invalid Question ID"
+    
+    data = getattr(response, 'data', '')
+    return data
 
-#     with modulestore().bulk_operations(usage_key.course_key):
-#         response = cdcv.item._get_module_info(cdcv.item._get_xblock(usage_key, user))
-#     return response['data']
+
+
+def _get_xblock(usage_key, user):
+    """
+    Returns the xblock for the specified usage key. Note: if failing to find a key with a category
+    in the CREATE_IF_NOT_FOUND list, an xblock will be created and saved automatically.
+    """
+
+    store = modulestore()
+    with store.bulk_operations(usage_key.course_key):
+        try:
+            return store.get_item(usage_key, depth=None)
+        except ItemNotFoundError:
+            return None
+        except InvalidLocationError:
+            return None
