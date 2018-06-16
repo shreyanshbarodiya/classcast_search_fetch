@@ -12,11 +12,12 @@ from django.db.models import Q
 import random
 from itertools import chain
 
-from xmodule.modulestore.django import modulestore
+# from xmodule.modulestore.django import modulestore
 # from opaque_keys.edx.keys import UsageKey
-import cms.djangoapps.contentstore.views as cdcv
-import cms.djangoapps.contentstore as cdc
-
+# import cms.djangoapps.contentstore.views as cdcv
+# import cms.djangoapps.contentstore as cdc
+# from cms.djangoapps.contentstore.item import classcast_xblock_data
+import cms
 
 class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormView
     #queryset = question.objects.all()
@@ -68,7 +69,7 @@ class QuestionSearchAPIView(generics.ListAPIView): # DetailView CreateView FormV
             qs = qs.filter(tags__contains=tags)
 
         for que in qs:
-            que.data = _get_question_data(que.xblock_id, self.request.user)
+            que.data = cms.djangoapps.contentstore.item.classcast_xblock_data(que.xblock_id, self.request.user)
 
         return qs
 
@@ -260,72 +261,9 @@ class QuestionGymAPIView(generics.ListAPIView): # DetailView CreateView FormView
         return qs
 
 
-def _get_question_data(xblock_id, user):
-    usage_key = cdcv.helpers.usage_key_with_run(xblock_id)
+# def _get_question_data(xblock_id, user):
+#     usage_key = cdcv.helpers.usage_key_with_run(xblock_id)
 
-    with modulestore().bulk_operations(usage_key.course_key):
-        response = cdcv.item._get_module_info(cdcv.item._get_xblock(usage_key, user))
-    return response['data']
-
-
-# def usage_key_with_run(usage_key_string):
-#     """
-#     Converts usage_key_string to a UsageKey, adding a course run if necessary
-#     """
-#     usage_key = UsageKey.from_string(usage_key_string)
-#     usage_key = usage_key.replace(course_key=modulestore().fill_in_run(usage_key.course_key))
-#     return usage_key
-
-"""
-replace_static_urls
-isinstance
-LibraryUsageLocator
-create_xblock_info
-"""
-
-# def _get_module_info(xblock, rewrite_static_links=True, include_ancestor_info=False, include_publishing_info=False):
-#     """
-#     metadata, data, id representation of a leaf module fetcher.
-#     :param usage_key: A UsageKey
-#     """
-#     with modulestore().bulk_operations(xblock.location.course_key):
-#         data = getattr(xblock, 'data', '')
-#         if rewrite_static_links:
-#             data = replace_static_urls(
-#                 data,
-#                 None,
-#                 course_id=xblock.location.course_key
-#             )
-
-#         # Pre-cache has changes for the entire course because we'll need it for the ancestor info
-#         # Except library blocks which don't [yet] use draft/publish
-#         if not isinstance(xblock.location, LibraryUsageLocator):
-#             modulestore().has_changes(modulestore().get_course(xblock.location.course_key, depth=None))
-
-#         # Note that children aren't being returned until we have a use case.
-#         xblock_info = create_xblock_info(
-#             xblock, data=data, metadata=own_metadata(xblock), include_ancestor_info=include_ancestor_info
-#         )
-#         if include_publishing_info:
-#             add_container_page_publishing_info(xblock, xblock_info)
-
-#         return xblock_info
-
-# def _get_xblock(usage_key, user):
-#     """
-#     Returns the xblock for the specified usage key. Note: if failing to find a key with a category
-#     in the CREATE_IF_NOT_FOUND list, an xblock will be created and saved automatically.
-#     """
-#     store = modulestore()
-#     with store.bulk_operations(usage_key.course_key):
-#         try:
-#             return store.get_item(usage_key, depth=None)
-#         except ItemNotFoundError:
-#             if usage_key.category in CREATE_IF_NOT_FOUND:
-#                 # Create a new one for certain categories only. Used for course info handouts.
-#                 return store.create_item(user.id, usage_key.course_key, usage_key.block_type, block_id=usage_key.block_id)
-#             else:
-#                 raise
-#         except InvalidLocationError:
-#             log.error("Can't find item by location.")
-#             return JsonResponse({"error": "Can't find item by location: " + unicode(usage_key)}, 404)
+#     with modulestore().bulk_operations(usage_key.course_key):
+#         response = cdcv.item._get_module_info(cdcv.item._get_xblock(usage_key, user))
+#     return response['data']
