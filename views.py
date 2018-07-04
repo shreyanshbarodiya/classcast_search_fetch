@@ -203,7 +203,10 @@ def test_function(request):
     subtopic=request.GET.get("subtopic")
     marks=request.GET.get("marks")
 
-    duration=int(request.GET.get("duration"))
+    duration=request.GET.get("duration")
+    if duration is not None:
+    	duration=int(duration)
+    	
     if duration==30 :
         n_questions=12
     elif duration==60:
