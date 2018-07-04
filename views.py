@@ -172,6 +172,161 @@ def search_function(request):
     if tags is not None:
         qs = qs.filter(tags__contains=tags)
 
+    if n_questions is not None:
+    	qs=qs.order_by('?')[:(n_questions)]
+
+    res_json = serializers.serialize('json', qs)
+    res_json = json.loads(res_json)
+    for que in res_json:
+        # que['fields']['extra'] = "haha"
+        que['fields']['data'] = _xblock_data(que['pk'].strip())
+
+    res_json = json.dumps(res_json)
+
+   
+    return HttpResponse(res_json, content_type='application/json')
+
+
+def test_function(request):
+    qs = question.objects.all()
+
+    #n_questions=self.request.GET.get("n_questions")
+    question_type = self.request.GET.get("question_type")
+    # difficulty = self.request.GET.get("difficulty")
+    subject = self.request.GET.get("subject")
+    #chapter=self.request.GET.get("chapter")
+    chapter=request.GET.getlist('chapter')
+    standard=self.request.GET.get("standard")
+    goal=self.request.GET.get("goal")
+    stream=self.request.GET.get("stream")
+    topic=self.request.GET.get("topic")
+    subtopic=self.request.GET.get("subtopic")
+    marks=self.request.GET.get("marks")
+
+    duration=int(self.request.GET.get("duration"))
+    if duration==30 :
+        n_questions=12
+    elif duration==60:
+        n_questions=24
+    else:
+        n_questions=10
+
+
+    # filter by the user for not correctly submitted user 
+    # user_id = self.request.user.id
+    # submissions=test_submissions.objects.all().filter(student_id=user_id)
+    # submissions=submissions.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
+
+
+
+    if goal is not None:
+        qs = qs.filter(goal__iexact=goal)
+    if stream is not None:
+        qs = qs.filter(stream__iexact=stream)
+    if standard is not None:
+        qs = qs.filter(standard__iexact=standard)
+    if subject is not None:
+        qs = qs.filter(subject__iexact=subject)
+    if chapter is not None:
+        qs = qs.filter(chapter__in=chapter)
+    if question_type is not None:
+        qs = qs.filter(question_type__iexact=question_type)
+    # if difficulty is not None:
+    #     qs = qs.filter(difficulty__iexact=difficulty)
+    if topic is not None:
+        qs = qs.filter(topic__iexact=topic)
+    if subtopic is not None:
+        qs = qs.filter(subtopic__iexact=subtopic)
+    if marks is not None:
+        qs = qs.filter(marks__iexact=marks)
+
+    #qs.exclude(xblock_id__in=submissions)
+    #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
+    qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
+    qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
+    qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
+    # qs0.union(qs1, qs2)
+    # return qs0 | qs1 | qs2
+    qs_final = list(chain(qs0, qs1, qs2))
+    #return qs_final
+
+    res_json = serializers.serialize('json', qs_final)
+    res_json = json.loads(res_json)
+    for que in res_json:
+        # que['fields']['extra'] = "haha"
+        que['fields']['data'] = _xblock_data(que['pk'].strip())
+
+    res_json = json.dumps(res_json)
+
+   
+    return HttpResponse(res_json, content_type='application/json')
+
+
+def gym_function(request):
+    qs = question.objects.all()
+    topic_list = topics.objects.all()
+
+    n_questions=3 # fetch questions in the batches of 3
+    correct_threshold=3
+    subject = self.request.GET.get("subject")
+    chapter=self.request.GET.get("chapter")
+    standard=self.request.GET.get("standard")
+
+
+    # filter by the user for not correctly submitted user 
+    student_id = self.request.user.id
+
+    
+    if standard is not None:
+        qs = qs.filter(standard__iexact=standard)
+        topic_list = topic_list.filter(standard__iexact=standard)
+    if subject is not None:
+        qs = qs.filter(subject__iexact=subject)
+        topic_list = topic_list.filter(subject__iexact=subject)
+    if chapter is not None:
+        qs = qs.filter(chapter__iexact=chapter)
+        topic_list = topic_list.filter(chapter__iexact=chapter)
+    
+    #fetch topic list of given chapter
+    # topic_list=topics.objects.all().filter(standard__iexact=standard, subject__iexact=subject, chapter__iexact=chapter)
+    fetch_topic=''
+    fetch_difficulty=''
+    #iterate over topics and look for current topic and difficulty of user
+    if not topic_list:
+	    for topic in topic_list.iterator():
+	        submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).first()
+	        submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).first()
+	        submissions_difficult=student_topic_interaction.objects.filter(student_id=student_id,difficulty=2, topic_id=topic.topic_id).first()
+	        #if number of diffiuclt correct question greater than threshold go to next topic
+	        if submissions_difficult is not None and submissions_difficult.values('num_corrects')>=correct_threshold:
+	            continue;
+	        #if number of mediumm correct question greater than threshold choose current topic and diffuclt level
+	        elif submissions_medium is not None and submissions_medium.values('num_corrects') >=correct_threshold:
+	            fetch_difficulty=2
+	            fetch_topic=topic
+	            break
+	        elif submissions_easy is not None and submissions_easy.values('num_corrects') >=correct_threshold:
+	            fetch_difficulty=1
+	            fetch_topic=topic
+	            break
+	        else :
+	            fetch_difficulty=0
+	            fetch_topic=topic
+	            break
+
+    # fetch 3 questions of fetch_difficulty and fetch topic
+    #if done on all topics do something here , currently 
+    #using a random topic and random diffiuclty 
+    if fetch_topic=='' and topic_list:
+        fetch_topic=random.choice(topic_list)
+        fetch_difficulty=random.choice([0,1,2])        
+
+    qs1 = qs.filter(topic__iexact=fetch_topic.topic_name)
+    if len(qs1)>n_questions:
+    	qs=qs1
+    qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
+    #return qs
+
     res_json = serializers.serialize('json', qs)
     res_json = json.loads(res_json)
     for que in res_json:
