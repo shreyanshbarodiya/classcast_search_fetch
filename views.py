@@ -193,7 +193,8 @@ def test_function(request):
     question_type = request.GET.get("question_type")
     subject = request.GET.get("subject")
     difficulty = request.GET.get("difficulty")
-    chapter=request.GET.get("chapter")
+    #chapter=request.GET.get("chapter")
+    chapter=request.GET.getlist('chapter')
     standard=request.GET.get("standard")
     goal=request.GET.get("goal")
     stream=request.GET.get("stream")
@@ -210,7 +211,7 @@ def test_function(request):
     if subject is not None:
         qs = qs.filter(difficulty__iexact=subject)
     if chapter is not None:
-        qs = qs.filter(chapter__iexact=chapter)
+        qs = qs.filter(chapter__in=chapter)
     if standard is not None:
         qs = qs.filter(standard__iexact=standard)
     if goal is not None:
