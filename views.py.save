@@ -235,13 +235,8 @@ def test_function(request):
 
     #qs.exclude(xblock_id__in=submissions)
     #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
-
-    if n_questions == None:
-	n_questions=12
-    else:
-	n_questions=int(n_questions)
-
-    qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
+    if n_questions== None 
+    qs:0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
     qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
     qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
     # qs0.union(qs1, qs2)
