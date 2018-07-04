@@ -203,16 +203,18 @@ def test_function(request):
     subtopic=request.GET.get("subtopic")
     marks=request.GET.get("marks")
 
+    n_questions=10
     duration=request.GET.get("duration")
     if duration is not None:
     	duration=int(duration)
-    	
-    if duration==30 :
-        n_questions=12
-    elif duration==60:
-        n_questions=24
-    else:
-        n_questions=10
+
+		if duration==30 :
+	        n_questions=12
+	    elif duration==60:
+	        n_questions=24
+	    else:
+	    	pass
+        
 
 
     # filter by the user for not correctly submitted user 
@@ -245,15 +247,16 @@ def test_function(request):
 
     #qs.exclude(xblock_id__in=submissions)
     #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
-    qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
-    qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
-    qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
+    #qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
+    #qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
+    #qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
     # qs0.union(qs1, qs2)
     # return qs0 | qs1 | qs2
-    qs_final = list(chain(qs0, qs1, qs2))
+    #qs_final = list(chain(qs0, qs1, qs2))
+    qs=qs.order_by('?')[:(n_questions)]
     #return qs_final
 
-    res_json = serializers.serialize('json', qs_final)
+    res_json = serializers.serialize('json', qs)
     res_json = json.loads(res_json)
     for que in res_json:
         # que['fields']['extra'] = "haha"

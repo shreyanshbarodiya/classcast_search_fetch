@@ -43,7 +43,7 @@ class chapter(models.Model):
 		db_table = 'classcast_chapter_index'
 
 	def __str__(self):
-		return self.standard + ":" + self.subject + ":" + self.chapter 
+		return str(self.standard) + ":" + self.subject + ":" + self.chapter 
 
 class topics(models.Model):
 	standard =models.IntegerField()
@@ -56,7 +56,7 @@ class topics(models.Model):
 		db_table = 'classcast_topic_index'
 
 	def __str__(self):
-		return self.standard + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
+		return str(self.standard) + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
 
 class student_topic_interaction(models.Model):
 	student_id= models.IntegerField(primary_key=True)
