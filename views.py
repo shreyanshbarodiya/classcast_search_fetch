@@ -188,75 +188,61 @@ def search_function(request):
 
 
 def test_function(request):
-    qs = question.objects.all()
-
-    #n_questions=self.request.GET.get("n_questions")
+	qs = question.objects.all()
+    n_questions=request.GET.get("n_questions")
     question_type = request.GET.get("question_type")
-    # difficulty = self.request.GET.get("difficulty")
     subject = request.GET.get("subject")
-    #chapter=self.request.GET.get("chapter")
-    chapter=request.GET.getlist('chapter')
+    difficulty = request.GET.get("difficulty")
+    chapter=request.GET.get("chapter")
     standard=request.GET.get("standard")
     goal=request.GET.get("goal")
     stream=request.GET.get("stream")
     topic=request.GET.get("topic")
     subtopic=request.GET.get("subtopic")
     marks=request.GET.get("marks")
+    exam_appearances=request.GET.get("exam_appearances")
+    tags=request.GET.get("tags")
 
-    n_questions=10
-    duration=request.GET.get("duration")
-    if duration is not None:
-    	duration=int(duration)
-
-		if duration==30 :
-	        n_questions=12
-	    elif duration==60:
-	        n_questions=24
-	    else:
-	    	pass
-        
-
-
-    # filter by the user for not correctly submitted user 
-    # user_id = self.request.user.id
-    # submissions=test_submissions.objects.all().filter(student_id=user_id)
-    # submissions=submissions.filter(Q(correctly_attempted_in_test__gte=1) |Q(correctly_attempted_in_gym__gte=1)).values('xblock_id')
-
-
-
+    if question_type is not None:
+        qs = qs.filter(question_type__iexact=question_type)
+    if difficulty is not None:
+        qs = qs.filter(difficulty__iexact=difficulty)
+    if subject is not None:
+        qs = qs.filter(difficulty__iexact=subject)
+    if chapter is not None:
+        qs = qs.filter(chapter__iexact=chapter)
+    if standard is not None:
+        qs = qs.filter(standard__iexact=standard)
     if goal is not None:
         qs = qs.filter(goal__iexact=goal)
     if stream is not None:
         qs = qs.filter(stream__iexact=stream)
-    if standard is not None:
-        qs = qs.filter(standard__iexact=standard)
-    if subject is not None:
-        qs = qs.filter(subject__iexact=subject)
-    if chapter is not None:
-        qs = qs.filter(chapter__in=chapter)
-    if question_type is not None:
-        qs = qs.filter(question_type__iexact=question_type)
-    # if difficulty is not None:
-    #     qs = qs.filter(difficulty__iexact=difficulty)
+    if topic is not None:
+        qs = qs.filter(topic__iexact=topic)
     if topic is not None:
         qs = qs.filter(topic__iexact=topic)
     if subtopic is not None:
         qs = qs.filter(subtopic__iexact=subtopic)
     if marks is not None:
         qs = qs.filter(marks__iexact=marks)
+    if exam_appearances is not None:
+        qs = qs.filter(exam_appearances__gte=exam_appearances)
+    if tags is not None:
+        qs = qs.filter(tags__contains=tags)
+
+    if n_questions is not None:
+    	qs=qs.order_by('?')[:(n_questions)]
 
     #qs.exclude(xblock_id__in=submissions)
     #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
-    #qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
-    #qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
-    #qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
+    qs0=qs.filter(difficulty=0).order_by('?')[:(n_questions/3)]
+    qs1=qs.filter(difficulty=1).order_by('?')[:(n_questions/3)]
+    qs2=qs.filter(difficulty=2).order_by('?')[:(n_questions/3)]
     # qs0.union(qs1, qs2)
     # return qs0 | qs1 | qs2
-    #qs_final = list(chain(qs0, qs1, qs2))
-    qs=qs.order_by('?')[:(n_questions)]
+    qs_final = list(chain(qs0, qs1, qs2))
     #return qs_final
-
-    res_json = serializers.serialize('json', qs)
+    res_json = serializers.serialize('json', qs_final)
     res_json = json.loads(res_json)
     for que in res_json:
         # que['fields']['extra'] = "haha"
@@ -264,7 +250,6 @@ def test_function(request):
 
     res_json = json.dumps(res_json)
 
-   
     return HttpResponse(res_json, content_type='application/json')
 
 
