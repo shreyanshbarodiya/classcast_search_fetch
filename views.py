@@ -191,19 +191,19 @@ def test_function(request):
     qs = question.objects.all()
 
     #n_questions=self.request.GET.get("n_questions")
-    question_type = self.request.GET.get("question_type")
+    question_type = request.GET.get("question_type")
     # difficulty = self.request.GET.get("difficulty")
-    subject = self.request.GET.get("subject")
+    subject = request.GET.get("subject")
     #chapter=self.request.GET.get("chapter")
     chapter=request.GET.getlist('chapter')
-    standard=self.request.GET.get("standard")
-    goal=self.request.GET.get("goal")
-    stream=self.request.GET.get("stream")
-    topic=self.request.GET.get("topic")
-    subtopic=self.request.GET.get("subtopic")
-    marks=self.request.GET.get("marks")
+    standard=request.GET.get("standard")
+    goal=request.GET.get("goal")
+    stream=request.GET.get("stream")
+    topic=request.GET.get("topic")
+    subtopic=request.GET.get("subtopic")
+    marks=request.GET.get("marks")
 
-    duration=int(self.request.GET.get("duration"))
+    duration=int(request.GET.get("duration"))
     if duration==30 :
         n_questions=12
     elif duration==60:
@@ -268,13 +268,13 @@ def gym_function(request):
 
     n_questions=3 # fetch questions in the batches of 3
     correct_threshold=3
-    subject = self.request.GET.get("subject")
-    chapter=self.request.GET.get("chapter")
-    standard=self.request.GET.get("standard")
+    subject = request.GET.get("subject")
+    chapter=request.GET.get("chapter")
+    standard=request.GET.get("standard")
 
 
     # filter by the user for not correctly submitted user 
-    student_id = self.request.user.id
+    student_id = request.user.id
 
     
     if standard is not None:
