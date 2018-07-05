@@ -203,6 +203,15 @@ def test_function(request):
     marks=request.GET.get("marks")
     exam_appearances=request.GET.get("exam_appearances")
     tags=request.GET.get("tags")
+    single_chapter=False
+    if len(chapter)==0:
+    	chapter=None
+    	single_chapter=True
+    elif len(chapter)==1:
+    	chapter=chapter[0]
+    	single_chapter=True
+    else:
+    	single_chapter=False
 
     if question_type is not None:
         qs = qs.filter(question_type__iexact=question_type)
@@ -210,8 +219,13 @@ def test_function(request):
         qs = qs.filter(difficulty__iexact=difficulty)
     if subject is not None:
         qs = qs.filter(difficulty__iexact=subject)
-    if chapter is not None:
+
+    if single_chapter:
+    	if chapter is not None:
+    		qs = qs.filter(chapter__iexact=chapter)
+    if not single_chapter and chapter is not None:
         qs = qs.filter(chapter__in=chapter)
+        
     if standard is not None:
         qs = qs.filter(standard__iexact=standard)
     if goal is not None:
