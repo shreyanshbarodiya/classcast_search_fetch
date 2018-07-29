@@ -251,7 +251,7 @@ def test_function(request):
     #qs.exclude(xblock_id__in=submissions)
     #TODO: add condition if number of total questions in difficulty d is less than n_questions/3 
 
-    if n_questions == None:
+    if n_questions is None:
 	n_questions=12
     else:
 	n_questions=int(n_questions)
@@ -286,7 +286,7 @@ def gym_function(request):
 
 
     # filter by the user for not correctly submitted user 
-    student_id = request.user.id
+    #student_id = request.user.id
 
     
     if standard is not None:
@@ -304,7 +304,7 @@ def gym_function(request):
     fetch_topic=''
     fetch_difficulty=''
     #iterate over topics and look for current topic and difficulty of user
-    if not topic_list:
+    if topic_list:
 	    for topic in topic_list.iterator():
 	        submissions_easy=student_topic_interaction.objects.filter(student_id=student_id,difficulty=0, topic_id=topic.topic_id).first()
 	        submissions_medium=student_topic_interaction.objects.filter(student_id=student_id,difficulty=1, topic_id=topic.topic_id).first()
@@ -331,11 +331,14 @@ def gym_function(request):
     #using a random topic and random diffiuclty 
     if fetch_topic=='' and topic_list:
         fetch_topic=random.choice(topic_list)
-        fetch_difficulty=random.choice([0,1,2])        
-
-    qs1 = qs.filter(topic__iexact=fetch_topic.topic_name)
-    if len(qs1)>n_questions:
-    	qs=qs1
+        fetch_difficulty=random.choice([0,1,2])
+    else:
+        fetch_difficulty=0
+        
+    if fetch_topic != '':
+        qs1 = qs.filter(topic__iexact=fetch_topic.topic_name)
+        if len(qs1)>n_questions:
+    	    qs=qs1
     qs=qs.filter(difficulty=fetch_difficulty).order_by('?')[:(n_questions)]
     #return qs
 

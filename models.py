@@ -35,12 +35,13 @@ class question(models.Model):
 		return u'%s %s %s' % (str(self.subject), str(self.topic), str(self.xblock_id))
 
 class chapter(models.Model):
-	standard =models.IntegerField(primary_key=True)
-	subject=models.CharField(max_length=50, primary_key=True)
-	chapter=models.CharField(max_length=255, primary_key=True)
+	standard =models.IntegerField()
+	subject=models.CharField(max_length=50)
+	chapter=models.CharField(max_length=255)
 
 	class Meta:
 		db_table = 'classcast_chapter_index'
+		unique_together = (("standard","subject","chapter"),)
 
 	def __str__(self):
 		return str(self.standard) + ":" + self.subject + ":" + self.chapter 
@@ -59,15 +60,16 @@ class topics(models.Model):
 		return str(self.standard) + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
 
 class student_topic_interaction(models.Model):
-	student_id= models.IntegerField(primary_key=True)
-	topic_id=models.IntegerField(primary_key=True)
-	difficulty=models.IntegerField(primary_key=True)
+	student_id= models.IntegerField()
+	topic_id=models.IntegerField()
+	difficulty=models.IntegerField()
 	num_attempts=models.IntegerField(default=0)
 	num_skipped=models.IntegerField(default=0)
 	num_corrects=models.IntegerField(default=0)
 
 	class Meta:
 		db_table = 'classcast_student_topic_interaction'
+		unique_together= (("student_id","topic_id","difficulty"),)
 
 	def __str__(self):
 		return self.student_id + ":" + self.topic_id
