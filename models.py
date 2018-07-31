@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
 class question(models.Model):
-	xblock_id= models.CharField(max_length=1000, primary_key=True)
+	xblock_id= models.CharField(max_length=255, primary_key=True)
 	question_type=models.CharField(max_length=50)
 	standard=models.IntegerField()
 	stream=models.CharField(max_length=100)
@@ -47,9 +47,7 @@ class chapter(models.Model):
 		return str(self.standard) + ":" + self.subject + ":" + self.chapter 
 
 class topics(models.Model):
-	standard =models.IntegerField()
-	subject=models.CharField(max_length=50)
-	chapter=models.CharField(max_length=255)	
+	chapter=models.ForeignKey(chapter)	
 	topic_name=models.CharField(max_length=255)
 	topic_id=models.IntegerField(primary_key=True)
 
@@ -57,20 +55,20 @@ class topics(models.Model):
 		db_table = 'classcast_topic_index'
 
 	def __str__(self):
-		return str(self.standard) + ":" + self.subject + ":" + self.chapter + ":" + self.topic_name
+		return str(self.chapter) + ":"+ self.topic_name
 
 class student_topic_interaction(models.Model):
-	student_id= models.IntegerField()
-	topic_id=models.IntegerField()
-	difficulty=models.IntegerField()
+	student= models.ForeignKey(User)
+	topic=models.ForeignKey(topics)
+	difficulty=models.IntegerField(default=0)
 	num_attempts=models.IntegerField(default=0)
 	num_skipped=models.IntegerField(default=0)
 	num_corrects=models.IntegerField(default=0)
 
 	class Meta:
 		db_table = 'classcast_student_topic_interaction'
-		unique_together= (("student_id","topic_id","difficulty"),)
+		unique_together= (("student","topic","difficulty"),)
 
 	def __str__(self):
-		return self.student_id + ":" + self.topic_id
+		return self.student__id + ":" + self.topic__topic_id
 
