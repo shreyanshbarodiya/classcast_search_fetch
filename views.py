@@ -177,9 +177,9 @@ def search_function(request):
 
     res_json = serializers.serialize('json', qs)
     res_json = json.loads(res_json)
-    for que in res_json:
-        # que['fields']['extra'] = "haha"
-        que['fields']['data'] = _xblock_data(que['pk'].strip())
+    # for que in res_json:
+    #     # que['fields']['extra'] = "haha"
+    #     que['fields']['data'] = _xblock_data(que['pk'].strip())
 
     res_json = json.dumps(res_json)
 
@@ -265,9 +265,9 @@ def test_function(request):
     #return qs_final
     res_json = serializers.serialize('json', qs_final)
     res_json = json.loads(res_json)
-    for que in res_json:
-        # que['fields']['extra'] = "haha"
-        que['fields']['data'] = _xblock_data(que['pk'].strip())
+    # for que in res_json:
+    #     # que['fields']['extra'] = "haha"
+    #     que['fields']['data'] = _xblock_data(que['pk'].strip())
 
     res_json = json.dumps(res_json)
 
@@ -344,9 +344,9 @@ def gym_function(request):
 
     res_json = serializers.serialize('json', qs)
     res_json = json.loads(res_json)
-    for que in res_json:
-        # que['fields']['extra'] = "haha"
-        que['fields']['data'] = _xblock_data(que['pk'].strip())
+    # for que in res_json:
+    #     # que['fields']['extra'] = "haha"
+    #     que['fields']['data'] = _xblock_data(que['pk'].strip())
 
     res_json = json.dumps(res_json)
 
